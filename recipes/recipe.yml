@@ -26,14 +26,18 @@ modules:
         - micro
         - starship
         - akmod-nvidia
-        - xorg-x11-drv-nvidia
-        - xorg-x11-drv-nvidia-cuda
+        # - xorg-x11-drv-nvidia
+        # - xorg-x11-drv-nvidia-cuda
     remove:
       packages:
         # example: removing firefox (in favor of the flatpak)
         # "firefox" is the main package, "firefox-langpacks" is a dependency
         - firefox
         - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
+        
+  - type: bling
+    install:
+        - rpmfusion
 
   - type: default-flatpaks
     configurations:
@@ -47,6 +51,7 @@ modules:
 
   - type: containerfile
     snippets:
+      - RUN dnf install -y --allowerasing akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda
       - RUN akmods --force --kernels $(rpm -q --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' kernel-devel)
 
   - type: kargs
