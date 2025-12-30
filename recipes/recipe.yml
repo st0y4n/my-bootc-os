@@ -42,9 +42,12 @@ modules:
           - org.gnome.Loupe
       - scope: user # Also add Flathub user repo, but no user packages
 
-  - type: script
-    scripts:
-      - example.sh
+  - type: containerfile
+    snippets:
+      - COPY --from=ghcr.io/ublue-os/akmods-nvidia-lts:latest / /tmp/akmods-nvidia
+      - RUN find /tmp/akmods-nvidia
+      - RUN dnf install /tmp/rpms/ublue-os/ublue-os-nvidia*.rpm
+      - RUN dnf install /tmp/rpms/kmods/kmod-nvidia*.rpm
 
   - type: akmods
     install:
