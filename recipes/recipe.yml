@@ -43,6 +43,16 @@ modules:
       - scope: user # Also add Flathub user repo, but no user packages
 
   - type: akmods
-    nvidia-driver: nvidia
+        install:
+          - nvidia
+        nvidia-driver: latest
+
+  - type: kargs
+    arch: x86_64
+    kargs:
+      - rd.driver.blacklist=nouveau
+      - modprobe.blacklist=nouveau
+      - nvidia-drm.modeset=1
     
+
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
