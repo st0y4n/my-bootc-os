@@ -42,6 +42,10 @@ modules:
           - org.gnome.Loupe
       - scope: user # Also add Flathub user repo, but no user packages
 
+  - type: script
+    scripts:
+      - example.sh
+
   - type: akmods
     install:
       - nvidia
@@ -53,10 +57,5 @@ modules:
       - rd.driver.blacklist=nouveau
       - modprobe.blacklist=nouveau
       - nvidia-drm.modeset=1
-
-  - type: script
-    scripts:
-      - example.sh
-    
-
+      
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
