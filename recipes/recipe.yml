@@ -25,6 +25,9 @@ modules:
       packages:
         - micro
         - starship
+        - akmod-nvidia
+        - xorg-x11-drv-nvidia
+        - xorg-x11-drv-nvidia-cuda
     remove:
       packages:
         # example: removing firefox (in favor of the flatpak)
@@ -44,15 +47,7 @@ modules:
 
   - type: containerfile
     snippets:
-      - COPY --from=ghcr.io/ublue-os/akmods-nvidia-lts:main-43 / /tmp/akmods-nvidia
-      - RUN find /tmp/akmods-nvidia
-      - RUN dnf install /tmp/akmods-nvidia/rpms/ublue-os/ublue-os-nvidia*.rpm -y
-      - RUN dnf install /tmp/akmods-nvidia/rpms/kmods/kmod-nvidia*.rpm -y
-
-  - type: akmods
-    install:
-      - nvidia
-    nvidia-driver: nvidia
+      - RUN akmods --force --kernels $(rpm -q --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' kernel-devel)
 
   - type: kargs
     arch: x86_64
