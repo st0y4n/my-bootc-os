@@ -25,7 +25,7 @@ modules:
       packages:
         - micro
         - starship
-        - akmod-nvidia
+        # - akmod-nvidia
         # - xorg-x11-drv-nvidia
         # - xorg-x11-drv-nvidia-cuda
     remove:
