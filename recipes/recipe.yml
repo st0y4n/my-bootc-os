@@ -43,9 +43,9 @@ modules:
       - scope: user # Also add Flathub user repo, but no user packages
 
   - type: akmods
-        install:
-          - nvidia
-        nvidia-driver: nvidia
+    install:
+      - nvidia
+    nvidia-driver: nvidia
 
   - type: kargs
     arch: x86_64
