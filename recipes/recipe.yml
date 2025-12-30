@@ -45,7 +45,7 @@ modules:
   - type: akmods
         install:
           - nvidia
-        nvidia-driver: latest
+        nvidia-driver: nvidia
 
   - type: kargs
     arch: x86_64
