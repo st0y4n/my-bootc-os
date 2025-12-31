@@ -19,8 +19,12 @@ modules:
 
   - type: dnf
     repos:
+      files:
+        remove:
+          - negativo17
       copr:
         - atim/starship
+        
     install:
       packages:
         - micro
