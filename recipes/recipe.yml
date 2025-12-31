@@ -6,7 +6,7 @@ name: my-bootc-os
 description: This is my personal OS image.
 
 # the base image to build on top of (FROM) and the version tag to use
-base-image: ghcr.io/ublue-os/aurora-dx
+base-image: ghcr.io/ublue-os/kinoite-main
 image-version: latest # latest is also supported if you want new updates ASAP
 
 # module configuration, executed in order
@@ -19,11 +19,11 @@ modules:
 
   - type: dnf
     repos:
-      files:
-        remove:
-          - negativo17
-      copr:
-        - atim/starship
+      #files:
+      #  remove:
+      #    - negativo17
+      #copr:
+      #  - atim/starship
         
     install:
       packages:
@@ -55,6 +55,7 @@ modules:
 
   - type: containerfile
     snippets:
+      - RUN rpm-ostree override remove nvidia-driver nvidia-settings akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs xorg-x11-drv-nvidia-cuda nvidia-kmod-common --required
       - RUN dnf install -y --allowerasing akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda
       - RUN akmods --force --kernels $(rpm -q --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' kernel-devel)
 
