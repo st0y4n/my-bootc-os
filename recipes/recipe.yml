@@ -52,7 +52,7 @@ modules:
 
   - type: containerfile
     snippets:
-      - RUN rpm-ostree override remove nvidia-driver nvidia-settings akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs xorg-x11-drv-nvidia-cuda nvidia-kmod-common
+      # - RUN rpm-ostree override remove nvidia-driver nvidia-settings akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs xorg-x11-drv-nvidia-cuda nvidia-kmod-common
       - RUN dnf install -y --allowerasing akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda
       - RUN akmods --force --kernels $(rpm -q --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' kernel-devel)
 
