@@ -16,25 +16,6 @@ modules:
     files:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
-
-  - type: dnf
-    repos:
-      #files:
-      #  remove:
-      #    - negativo17
-      copr:
-        - atim/starship
-        
-    install:
-      packages:
-        - micro
-        - starship
-    remove:
-      packages:
-        # example: removing firefox (in favor of the flatpak)
-        # "firefox" is the main package, "firefox-langpacks" is a dependency
-        - firefox
-        - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
         
   - type: bling
     install:
@@ -50,10 +31,31 @@ modules:
           - org.gnome.Loupe
       - scope: user # Also add Flathub user repo, but no user packages
 
+  - type: dnf
+    repos:
+      #files:
+      #  remove:
+      #    - negativo17
+      copr:
+        - atim/starship
+        
+    install:
+      packages:
+        - micro
+        - starship
+        - akmod-nvidia
+        - xorg-x11-drv-nvidia
+        - xorg-x11-drv-nvidia-cuda
+    remove:
+      packages:
+        # example: removing firefox (in favor of the flatpak)
+        # "firefox" is the main package, "firefox-langpacks" is a dependency
+        - firefox
+        - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
+        
   - type: containerfile
     snippets:
       # - RUN rpm-ostree override remove nvidia-driver nvidia-settings akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs xorg-x11-drv-nvidia-cuda nvidia-kmod-common
-      - RUN dnf install -y --allowerasing akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda
       - RUN akmods --force --kernels $(rpm -q --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' kernel-devel)
 
   - type: kargs
