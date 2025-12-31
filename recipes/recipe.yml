@@ -52,7 +52,7 @@ modules:
 
   - type: containerfile
     snippets:
-      - COPY --from=ghcr.io/ublue-os/akmods-nvidia-lts:main-43 / /tmp/akmods-common #ghcr.io/ublue-os/akmods-nvidia-lts:main-43
+      - COPY --from=ghcr.io/ublue-os/akmods-nvidia-lts:main-43 / /tmp/akmods-nvidia #ghcr.io/ublue-os/akmods-nvidia-lts:main-43
       - RUN dnf install /tmp/akmods-nvidia/rpms/ublue-os/ublue-os-nvidia*.rpm -y
       - RUN dnf install /tmp/akmods-nvidia/rpms/kmods/kmod-nvidia*.rpm -y
   
