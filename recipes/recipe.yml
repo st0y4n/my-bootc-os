@@ -6,7 +6,7 @@ name: my-bootc-os
 description: This is my personal OS image.
 
 # the base image to build on top of (FROM) and the version tag to use
-base-image: quay.io/fedora-ostree-desktops/kinoite
+base-image: ghcr.io/blue-build/base-images/fedora-kinoite-nvidia:latest
 image-version: latest # latest is also supported if you want new updates ASAP
 
 # module configuration, executed in order
@@ -49,20 +49,5 @@ modules:
         # "firefox" is the main package, "firefox-langpacks" is a dependency
         - firefox
         - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
-
-
-  - type: kargs
-    arch: x86_64
-    kargs:
-      - rd.driver.blacklist=nouveau
-      - modprobe.blacklist=nouveau
-      - nvidia-drm.modeset=1
-
-  - type: containerfile
-    snippets:
-      - COPY --from=ghcr.io/ublue-os/akmods-nvidia-lts:main-43 / /tmp/akmods-nvidia #ghcr.io/ublue-os/akmods-nvidia-lts:main-43
-      - RUN dnf install /tmp/akmods-nvidia/rpms/ublue-os/ublue-os-nvidia*.rpm -y
-      - RUN dnf install /tmp/akmods-nvidia/rpms/kmods/kmod-nvidia*.rpm -y
-      - RUN akmods --force --kernels $(rpm -q --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' kernel-devel)
       
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
