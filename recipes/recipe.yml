@@ -1,9 +1,10 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 # image will be published to ghcr.io/<user>/<name>
-name: my-bootc-os
+
+#name: my-bootc-os
 # description will be included in the image's metadata
-description: This is my personal OS image.
+#description: This is my personal OS image.
 
 # module configuration, executed in order
 # you can include multiple instances of the same module
