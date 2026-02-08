@@ -1,9 +1,5 @@
 ---
-# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-# image will be published to ghcr.io/<user>/<name>
-name: my-bootc-os
-# description will be included in the image's metadata
-description: This is my personal OS image.
+# yaml-language-server: $schema=https://schema.blue-build.org/module-stage-list-v1.json
 
 base-image: ghcr.io/blue-build/base-images/fedora-kinoite-nvidia
 image-version: latest
