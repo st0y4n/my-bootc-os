@@ -1,0 +1,5 @@
+base-image: ghcr.io/blue-build/base-images/fedora-kinoite-nvidia
+image-version: latest
+
+modules:
+    - from-file: recipe.yml

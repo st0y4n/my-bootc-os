@@ -5,10 +5,6 @@ name: my-bootc-os
 # description will be included in the image's metadata
 description: This is my personal OS image.
 
-# the base image to build on top of (FROM) and the version tag to use
-base-image: ghcr.io/blue-build/base-images/fedora-kinoite-nvidia
-image-version: latest # latest is also supported if you want new updates ASAP
-
 # module configuration, executed in order
 # you can include multiple instances of the same module
 modules:
@@ -29,6 +25,13 @@ modules:
         install: # system flatpaks we want all users to have and not remove
           - org.mozilla.firefox
           - org.gnome.Loupe
+          - com.visualstudio.code
+          - org.localsend.localsend_app
+          - org.onlyoffice.desktopeditors
+          - io.github.vikdevelop.SaveDesktop
+          - dev.vencord.Vesktop
+          - com.visualstudio.code
+          - org.virt_manager.virt-manager
       - scope: user # Also add Flathub user repo, but no user packages
 
   - type: dnf
@@ -38,11 +41,20 @@ modules:
       #    - negativo17
       copr:
         - atim/starship
-        
+
     install:
       packages:
         - micro
         - starship
+        - alacritty
+        - distrobox
+
+
+    group-install:
+      with-optional: true
+      packages:
+      - virtualization
+
     remove:
       packages:
         # example: removing firefox (in favor of the flatpak)

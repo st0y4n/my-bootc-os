@@ -1,0 +1,5 @@
+base-image: ghcr.io/ublue-os/kinoite-main
+image-version: latest
+
+modules:
+    - from-file: recipe.yml
