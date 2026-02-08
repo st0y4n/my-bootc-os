@@ -48,6 +48,7 @@ modules:
         - starship
         - alacritty
         - distrobox
+        - git
 
 
     group-install:
