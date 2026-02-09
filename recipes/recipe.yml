@@ -20,7 +20,7 @@ modules:
 
   - type: default-flatpaks
     configurations:
-      - notify: true # Send notification after install/uninstall is finished (true/false)
+      - notify: false # Send notification after install/uninstall is finished (true/false)
         scope: system
         # If no repo information is specified, Flathub will be used by default
         install: # system flatpaks we want all users to have and not remove
@@ -32,7 +32,7 @@ modules:
           - io.github.vikdevelop.SaveDesktop
           - dev.vencord.Vesktop
           - com.visualstudio.code
-          - org.virt_manager.virt-manager
+          - org.freedesktop.Platform.ffmpeg-full//24.08
       - scope: user # Also add Flathub user repo, but no user packages
 
   - type: dnf
