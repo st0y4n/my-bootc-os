@@ -7,8 +7,8 @@ image-version: latest
 description: kde
 
 modules:
-    - from-file: recipe.yml
-    - type: dnf
-        install:
-          packages:
-            - kvantum
+  - from-file: recipe.yml
+  - type: dnf
+    install:
+      packages:
+        - kvantum
