@@ -8,3 +8,7 @@ description: kde
 
 modules:
     - from-file: recipe.yml
+    - type: dnf
+        install:
+          packages:
+            - kvantum
