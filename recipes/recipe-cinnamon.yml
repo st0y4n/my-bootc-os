@@ -9,7 +9,16 @@ description: Cinnamon
 modules:
   - from-file: recipe.yml
   - type: dnf
+    install:
+      packages:
+        - lightdm
+        - lightdm-settings
+        - slick-greeter-cinnamon
     group-install:
       with-optional: true
       packages:
       - cinnamon-desktop
+  - type: systemd
+    system:
+      enabled:
+        - lightdm.service
