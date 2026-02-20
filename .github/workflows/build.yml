@@ -28,6 +28,7 @@ jobs:
           # !! Add your recipes here
           - recipe-kde-nvidia.yml
           - recipe-kde.yml
+          - recipe-cinnamon.yml
     steps:
       # the build is fully handled by the reusable github action
       - name: Build Custom Image
