@@ -15,7 +15,6 @@ modules:
         - lightdm-settings
         - lightdm-gtk
         - slick-greeter
-        - uupd
     group-install:
       with-optional: true
       packages:
@@ -24,7 +23,6 @@ modules:
     system:
       enabled:
         - lightdm.service
-        - uupd.timer
   - type: files
     files:
       - source: system-cinnamon
