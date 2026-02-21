@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+
+name: cosmic
+base-image: ghcr.io/ublue-os/cosmic-atomic-main
+image-version: latest
+description: cosmic
+
+modules:
+  - from-file: recipe.yml

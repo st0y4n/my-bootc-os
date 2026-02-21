@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+
+name: silverblue
+base-image: ghcr.io/ublue-os/silverblue-main
+image-version: latest
+description: silverblue
+modules:
+  - from-file: recipe.yml
+  - type: dnf
+    install:
+      packages:
+        - gnome-tweaks
