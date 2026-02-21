@@ -25,3 +25,7 @@ modules:
       enabled:
         - lightdm.service
         - uupd.timer
+  - type: files
+    files:
+      - source: system-cinnamon
+        destination: /
