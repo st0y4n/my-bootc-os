@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+
+name: kinoite-cachy
+base-image: ghcr.io/ublue-os/kinoite-main
+image-version: latest
+description: kde cachy
+
+modules:
+  - from-file: recipe-kde.yml
+
+  - type: custom-kernel
+    source: local
+    kernel: cachyos
+
+  - type: dnf
+    repos:
+      cleanup: true
+      copr:
+      - bieszczaders/kernel-cachyos-addons
+    install:
+      packages:
+        - cachyos-settings
+        - scx-scheds
+        - scx-tools
+    remove:
+      auto-remove: true
+      packages:
+        - zram-generator-defaults
+
+  - type: script
+    scripts:
+      - adios-ioscheduler.sh
+  - type: initramfs

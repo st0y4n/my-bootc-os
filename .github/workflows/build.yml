@@ -33,6 +33,7 @@ jobs:
           - recipe-silverblue.yml
           - recipe-silverblue-nvidia.yml
           - recipe-cinnamon.yml
+          - recipe-kde-cachy.yml
     steps:
       # the build is fully handled by the reusable github action
       - name: Build Custom Image
