@@ -7,7 +7,7 @@ image-version: latest
 description: kde cachy
 
 modules:
-  - from-file: recipe-kde.yml
+  - from-file: recipe.yml
 
   - type: custom-kernel
     source: local
@@ -23,6 +23,7 @@ modules:
         - cachyos-settings
         - scx-scheds
         - scx-tools
+        - kvantum
     remove:
       auto-remove: true
       packages:
