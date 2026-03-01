@@ -35,7 +35,7 @@ jobs:
           - recipe-cinnamon.yml
           - recipe-kde-cachy.yml
           - recipe-kde-cachy-nvidia.yml
-steps:
+    steps:
       # 1. Download the repo code manually first
       - name: Checkout repo
         uses: actions/checkout@v4
