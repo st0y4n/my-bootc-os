@@ -11,3 +11,4 @@ modules:
     install:
       packages:
         - gnome-tweaks
+  - from-file: finalize.yml

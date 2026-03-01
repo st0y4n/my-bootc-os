@@ -27,3 +27,4 @@ modules:
     files:
       - source: system-cinnamon
         destination: /
+  - from-file: finalize.yml

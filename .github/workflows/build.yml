@@ -34,8 +34,20 @@ jobs:
           - recipe-silverblue-nvidia.yml
           - recipe-cinnamon.yml
           - recipe-kde-cachy.yml
-    steps:
-      # the build is fully handled by the reusable github action
+          - recipe-kde-cachy-nvidia.yml
+steps:
+      # 1. Download the repo code manually first
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2. Create the hidden folder and inject the secret key ONLY for cachy recipes
+      - name: Setup MOK Key for Secure Boot
+        if: contains(matrix.recipe, 'cachy')
+        run: |
+          mkdir -p .secure_files
+          echo "${{ secrets.MOK_KEY }}" > .secure_files/MOK.priv
+
+      # 3. the build is fully handled by the reusable github action
       - name: Build Custom Image
         uses: blue-build/github-action@v1.10
         with:
@@ -46,3 +58,5 @@ jobs:
 
           # enabled by default, disable if your image is small and you want faster builds
           maximize_build_space: true
+          # CRITICAL: Tell BlueBuild to skip checkout so it doesn't delete the key!
+          skip_checkout: true

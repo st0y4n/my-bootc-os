@@ -8,3 +8,4 @@ description: cosmic nvidia
 
 modules:
   - from-file: recipe.yml
+  - from-file: finalize.yml

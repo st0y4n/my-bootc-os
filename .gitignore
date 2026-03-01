@@ -1,3 +1,6 @@
 cosign.key
 cosign.private
 /Containerfile
+.secure_files/
+*.key
+*.priv
