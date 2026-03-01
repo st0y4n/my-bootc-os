@@ -16,8 +16,8 @@ modules:
 
   - type: custom-kernel
     source: local
-    nvidia: true
     kernel: cachyos
+    nvidia: true
     secrets:
       - type: file
         source: .secure_files/MOK.priv
