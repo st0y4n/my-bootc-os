@@ -310,7 +310,7 @@ if [ "${NVIDIA}" = "true" ]; then
     disable_akmodsbuild || exit 1
 
     dnf install -y --setopt=install_weak_deps=False --setopt=tsflags=noscripts \
-        --disablerepo="rpmfusion*" \
+        --disablerepo="rpmfusion*,fedora-multimedia*" \
         akmod-nvidia \
         nvidia-kmod-common \
         nvidia-modprobe \
@@ -336,7 +336,7 @@ if [ "${NVIDIA}" = "true" ]; then
 
     log "Installing Nvidia userspace packages."
     dnf install -y --setopt=skip_unavailable=1 \
-        --disablerepo="rpmfusion*" \
+        --disablerepo="rpmfusion*,fedora-multimedia*" \
         libva-nvidia-driver \
         nvidia-driver \
         nvidia-persistenced \
