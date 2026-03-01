@@ -302,8 +302,8 @@ if [ "${NVIDIA}" = "true" ]; then
         https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo \
         -o /etc/yum.repos.d/nvidia-container-toolkit.repo
     curl -fsSL --retry 5 --create-dirs \
-        https://negativo17.org/repos/fedora-nvidia.repo \
-        -o /etc/yum.repos.d/fedora-nvidia.repo
+        https://negativo17.org/repos/fedora-nvidia-580.repo \
+        -o /etc/yum.repos.d/fedora-nvidia-580.repo
 
     log "Building Nvidia kernel modules."
     disable_akmodsbuild || exit 1

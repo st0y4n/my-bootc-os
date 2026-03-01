@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 
 name: kinoite-cachy-nvidia
-base-image: ghcr.io/blue-build/base-images/fedora-kinoite-nvidia
+base-image: ghcr.io/ublue-os/kinoite-main
 image-version: latest
 description: kde cachy nvidia
 
@@ -16,6 +16,7 @@ modules:
 
   - type: custom-kernel
     source: local
+    nvidia: true
     kernel: cachyos
     secrets:
       - type: file
