@@ -9,6 +9,11 @@ description: kde cachy nvidia
 modules:
   - from-file: recipe.yml
 
+  - type: files
+    files:
+      - source: system-cachy
+        destination: /
+
   - type: custom-kernel
     source: local
     kernel: cachyos
@@ -43,10 +48,5 @@ modules:
   - type: script
     scripts:
       - adios-ioscheduler.sh
-
-  - type: files
-    files:
-      - source: system-cachy
-        destination: /
 
   - from-file: finalize.yml
