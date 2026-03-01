@@ -14,21 +14,6 @@ modules:
       - source: system-cachy
         destination: /
 
-  - type: custom-kernel
-    source: local
-    kernel: cachyos
-    secrets:
-      - type: file
-        source: .secure_files/MOK.priv
-        mount:
-          type: file
-          destination: /tmp/certs/MOK.priv
-    sign:
-      key: /tmp/certs/MOK.priv
-      cert: /usr/share/cert/MOK.pem
-      mok-password: stoyan
-      
-
   - type: dnf
     repos:
       cleanup: true
@@ -45,6 +30,21 @@ modules:
       auto-remove: true
       packages:
         - zram-generator-defaults
+
+  - type: custom-kernel
+    source: local
+    kernel: cachyos
+    secrets:
+      - type: file
+        source: .secure_files/MOK.priv
+        mount:
+          type: file
+          destination: /tmp/certs/MOK.priv
+    sign:
+      key: /tmp/certs/MOK.priv
+      cert: /usr/share/cert/MOK.pem
+      mok-password: stoyan
+      
 
   - type: script
     scripts:

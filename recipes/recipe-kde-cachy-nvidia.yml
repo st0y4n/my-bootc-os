@@ -14,6 +14,23 @@ modules:
       - source: system-cachy
         destination: /
 
+  - type: dnf
+    repos:
+      cleanup: true
+      copr:
+      - bieszczaders/kernel-cachyos-addons
+    install:
+      packages:
+        - cachyos-settings
+        - scx-scheds
+        - scx-tools
+        - kvantum
+        - sbsign
+    remove:
+      auto-remove: true
+      packages:
+        - zram-generator-defaults
+
   - type: custom-kernel
     source: local
     kernel: cachyos
@@ -28,23 +45,7 @@ modules:
       key: /tmp/certs/MOK.priv
       cert: /usr/share/cert/MOK.pem
       mok-password: stoyan
-      
-
-  - type: dnf
-    repos:
-      cleanup: true
-      copr:
-      - bieszczaders/kernel-cachyos-addons
-    install:
-      packages:
-        - cachyos-settings
-        - scx-scheds
-        - scx-tools
-        - kvantum
-    remove:
-      auto-remove: true
-      packages:
-        - zram-generator-defaults
+    
 
   - type: script
     scripts:
