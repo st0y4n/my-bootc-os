@@ -16,7 +16,6 @@ modules:
         - cachyos-settings
         - scx-scheds
         - scx-tools
-        - sbsign
     remove:
       auto-remove: true
       packages:
