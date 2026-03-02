@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+
+modules:
+  - type: dnf
+    install:
+      packages:
+        - lightdm
+        - lightdm-settings
+        - lightdm-gtk
+        - slick-greeter
+    group-install:
+      with-optional: true
+      packages:
+      - cinnamon-desktop
+  - type: systemd
+    system:
+      enabled:
+        - lightdm.service
+  - type: files
+    files:
+      - source: system-cinnamon
+        destination: /

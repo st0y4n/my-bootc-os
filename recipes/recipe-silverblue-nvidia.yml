@@ -8,8 +8,5 @@ description: silverblue nvidia
 
 modules:
   - from-file: recipe.yml
-  - type: dnf
-    install:
-      packages:
-        - gnome-tweaks
+  - from-file: silverblue.yml
   - from-file: finalize.yml

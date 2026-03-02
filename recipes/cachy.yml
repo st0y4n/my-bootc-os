@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+
+modules:
+  - type: files
+    files:
+      - source: system-cachy
+        destination: /
+  - type: dnf
+    repos:
+      cleanup: true
+      copr:
+      - bieszczaders/kernel-cachyos-addons
+    install:
+      packages:
+        - cachyos-settings
+        - scx-scheds
+        - scx-tools
+        - sbsign
+    remove:
+      auto-remove: true
+      packages:
+        - zram-generator-defaults
+  - type: script
+    scripts:
+      - adios-ioscheduler.sh
