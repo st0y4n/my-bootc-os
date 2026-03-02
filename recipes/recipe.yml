@@ -51,6 +51,7 @@ modules:
         - alacritty
         - distrobox
         - git
+        - sbsign
 
 
     group-install:
