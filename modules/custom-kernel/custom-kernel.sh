@@ -66,30 +66,35 @@ cachyos-lto)
     KERNEL_PKG="kernel-cachyos-lto"
     KERNEL_DEVEL_PKG="kernel-cachyos-lto-devel-matched"
     KERNEL_PACKAGES="kernel-cachyos-lto kernel-cachyos-lto-core kernel-cachyos-lto-modules kernel-cachyos-lto-devel-matched"
+    TRANSIENT="${TRANSIENT} ${KERNEL_DEVEL_PKG}"
     ;;
 cachyos-lts-lto)
     COPR_REPO="bieszczaders/kernel-cachyos-lto"
     KERNEL_PKG="kernel-cachyos-lts-lto"
     KERNEL_DEVEL_PKG="kernel-cachyos-lts-lto-devel-matched"
     KERNEL_PACKAGES="kernel-cachyos-lts-lto kernel-cachyos-lts-lto-core kernel-cachyos-lts-lto-modules kernel-cachyos-lts-lto-devel-matched"
+    TRANSIENT="${TRANSIENT} ${KERNEL_DEVEL_PKG}"
     ;;
 cachyos)
     COPR_REPO="bieszczaders/kernel-cachyos"
     KERNEL_PKG="kernel-cachyos"
     KERNEL_DEVEL_PKG="kernel-cachyos-devel-matched"
     KERNEL_PACKAGES="kernel-cachyos kernel-cachyos-core kernel-cachyos-modules kernel-cachyos-devel-matched"
+    TRANSIENT="${TRANSIENT} ${KERNEL_DEVEL_PKG}"
     ;;
 cachyos-rt)
     COPR_REPO="bieszczaders/kernel-cachyos"
     KERNEL_PKG="kernel-cachyos-rt"
     KERNEL_DEVEL_PKG="kernel-cachyos-rt-devel-matched"
     KERNEL_PACKAGES="kernel-cachyos-rt kernel-cachyos-rt-core kernel-cachyos-rt-modules kernel-cachyos-rt-devel-matched"
+    TRANSIENT="${TRANSIENT} ${KERNEL_DEVEL_PKG}"
     ;;
 cachyos-lts)
     COPR_REPO="bieszczaders/kernel-cachyos"
     KERNEL_PKG="kernel-cachyos-lts"
     KERNEL_DEVEL_PKG="kernel-cachyos-lts-devel-matched"
     KERNEL_PACKAGES="kernel-cachyos-lts kernel-cachyos-lts-core kernel-cachyos-lts-modules kernel-cachyos-lts-devel-matched"
+    TRANSIENT="${TRANSIENT} ${KERNEL_DEVEL_PKG}"
     ;;
 *)
     err "Unsupported kernel type: ${KERNEL_TYPE}"
@@ -97,8 +102,6 @@ cachyos-lts)
     ;;
 esac
 
-# devel-matched provides sign-file and kernel headers; build-time only.
-TRANSIENT="${TRANSIENT} ${KERNEL_DEVEL_PKG}"
 
 # ---------------------------------------------------------------------------
 # Helper functions
