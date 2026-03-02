@@ -37,7 +37,6 @@ jobs:
 
       # 2. Create the hidden folder and inject the secret key ONLY for cachy recipes
       - name: Setup MOK Key for Secure Boot
-        if: contains(matrix.recipe, 'cachy')
         run: |
           mkdir -p .secure_files
           echo "${{ secrets.MOK_KEY }}" > .secure_files/MOK.priv
