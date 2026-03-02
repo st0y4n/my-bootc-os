@@ -13,6 +13,7 @@ log "Starting custom-kernel module..."
 KERNEL_TYPE=$(printf '%s' "$1" | jq -r '.kernel // "cachyos-lto"')
 INITRAMFS=$(printf '%s' "$1"   | jq -r '.initramfs // false')
 NVIDIA=$(printf '%s' "$1"      | jq -r '.nvidia // false')
+V4L2=$(printf '%s' "$1"        | jq -r '.v4l2loopback // false')
 SIGNING_KEY=$(printf '%s' "$1" | jq -r '.sign.key // ""')
 SIGNING_CERT=$(printf '%s' "$1"| jq -r '.sign.cert // ""')
 MOK_PASSWORD=$(printf '%s' "$1"| jq -r '.sign["mok-password"] // ""')
@@ -53,8 +54,13 @@ fi
 
 # TRANSIENT: space-separated build-only packages removed from the image after signing.
 TRANSIENT="akmods"
+INSTALL_CUSTOM_KERNEL=true
 
 case "${KERNEL_TYPE}" in
+stock|none)
+    INSTALL_CUSTOM_KERNEL=false
+    log "Kernel set to '${KERNEL_TYPE}'. Will retain stock Fedora kernel."
+    ;;
 cachyos-lto)
     COPR_REPO="bieszczaders/kernel-cachyos-lto"
     KERNEL_PKG="kernel-cachyos-lto"
@@ -149,10 +155,19 @@ sign_kernel() {
 }
 
 sign_kernel_modules() {
-    _module_root="/usr/lib/modules/${KERNEL_VERSION}"
-    _sign_file="${_module_root}/build/scripts/sign-file"
+    if [ "${INSTALL_CUSTOM_KERNEL}" = "true" ]; then
+        _module_root="/usr/lib/modules/${KERNEL_VERSION}"
+    else
+        _module_root="/usr/lib/modules/${KERNEL_VERSION}/extra"
+    fi
+
+    _sign_file="/usr/lib/modules/${KERNEL_VERSION}/build/scripts/sign-file"
     [ -x "${_sign_file}" ] \
         || { err "sign-file not found or not executable: ${_sign_file}"; return 1; }
+    [ -d "${_module_root}" ] \
+        || { log "No modules found to sign in ${_module_root}"; return 0; }
+
+    log "Signing modules in ${_module_root}..."    
     _tmplist=$(mktemp)
     find "${_module_root}" -type f \( \
         -name "*.ko" -o -name "*.ko.xz" -o -name "*.ko.zst" -o -name "*.ko.gz" \
@@ -224,74 +239,78 @@ EOF
 # Install kernel
 # ---------------------------------------------------------------------------
 
-log "Temporarily disabling kernel install scripts."
-disable_kernel_install_hooks
+if [ "${INSTALL_CUSTOM_KERNEL}" = "true" ]; then
+    log "Temporarily disabling kernel install scripts."
+    disable_kernel_install_hooks
 
-log "Removing default kernel packages."
-dnf -y remove \
-    kernel \
-    kernel-core \
-    kernel-modules \
-    kernel-modules-core \
-    kernel-modules-extra \
-    kernel-devel \
-    kernel-devel-matched || true
-rm -rf /usr/lib/modules/* || true
+    log "Removing default kernel packages."
+    dnf -y remove \
+        kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra kernel-devel kernel-devel-matched || true
+    rm -rf /usr/lib/modules/* || true
 
-log "Enabling COPR repo: ${COPR_REPO}"
-dnf -y copr enable "${COPR_REPO}"
+    log "Enabling COPR repo: ${COPR_REPO}"
+    dnf -y copr enable "${COPR_REPO}"
 
-log "Installing kernel packages: ${KERNEL_PACKAGES}"
-# SC2086: intentional word-splitting on space-separated package list
-# shellcheck disable=SC2086
-dnf -y install $KERNEL_PACKAGES akmods
+    log "Installing kernel packages: ${KERNEL_PACKAGES}"
+    # shellcheck disable=SC2086
+    dnf -y install $KERNEL_PACKAGES akmods
 
-KERNEL_VERSION=$(rpm -q "${KERNEL_PKG}" --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}') || exit 1
-log "Kernel version: ${KERNEL_VERSION}"
+    KERNEL_VERSION=$(rpm -q "${KERNEL_PKG}" --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}') || exit 1
+    log "Kernel version: ${KERNEL_VERSION}"
 
-log "Restoring kernel install scripts."
-restore_kernel_install_hooks
+    log "Restoring kernel install scripts."
+    restore_kernel_install_hooks
 
-log "Cleaning up COPR repos."
-rm -f /etc/yum.repos.d/*copr*
+    log "Cleaning up COPR repos."
+    rm -f /etc/yum.repos.d/*copr*
+else
+    # Stock Kernel Mode
+    KERNEL_VERSION=$(rpm -q "kernel" --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' | head -n 1) || exit 1
+    log "Using stock kernel version: ${KERNEL_VERSION}"
+    KERNEL_DEVEL_PKG="kernel-devel-matched-${KERNEL_VERSION}"
+    
+    log "Installing build dependencies for stock kernel."
+    dnf -y install akmods "${KERNEL_DEVEL_PKG}"
+fi
 
 # ---------------------------------------------------------------------------
 # Build v4l2loopback
 # ---------------------------------------------------------------------------
 
-log "Building v4l2loopback module."
-disable_akmodsbuild || exit 1
+if [ "${V4L2}" = "true" ]; then
+    log "Building v4l2loopback module."
+    disable_akmodsbuild || exit 1
 
-log "Enabling RPM Fusion Free repo."
-dnf -y install \
-    "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
+    log "Enabling RPM Fusion Free repo."
+    dnf -y install \
+        "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
 
-dnf install -y --setopt=install_weak_deps=False --setopt=tsflags=noscripts \
-    akmod-v4l2loopback
-TRANSIENT="${TRANSIENT} akmod-v4l2loopback"
+    dnf install -y --setopt=install_weak_deps=False --setopt=tsflags=noscripts \
+        akmod-v4l2loopback
+    TRANSIENT="${TRANSIENT} akmod-v4l2loopback"
 
-akmods --force --verbose --kernels "${KERNEL_VERSION}" --kmod v4l2loopback
+    akmods --force --verbose --kernels "${KERNEL_VERSION}" --kmod v4l2loopback
 
-# akmods always exits 0, so check for failure logs explicitly.
-_fail_found=false
-for _f in /var/cache/akmods/v4l2loopback/*-for-"${KERNEL_VERSION}".failed.log; do
-    [ -f "${_f}" ] && _fail_found=true && break
-done
-if [ "${_fail_found}" = "true" ]; then
-    err "v4l2loopback akmod build failed:"
+    # akmods always exits 0, so check for failure logs explicitly.
+    _fail_found=false
     for _f in /var/cache/akmods/v4l2loopback/*-for-"${KERNEL_VERSION}".failed.log; do
-        [ -f "${_f}" ] && cat "${_f}"
+        [ -f "${_f}" ] && _fail_found=true && break
     done
+    if [ "${_fail_found}" = "true" ]; then
+        err "v4l2loopback akmod build failed:"
+        for _f in /var/cache/akmods/v4l2loopback/*-for-"${KERNEL_VERSION}".failed.log; do
+            [ -f "${_f}" ] && cat "${_f}"
+        done
+        restore_akmodsbuild
+        exit 1
+    fi
+
+    log "Cleaning RPM Fusion Free repo."
+    dnf -y remove rpmfusion-free-release
+    rm -f /etc/yum.repos.d/rpmfusion-free*.repo
+
     restore_akmodsbuild
-    exit 1
 fi
-
-log "Cleaning RPM Fusion Free repo."
-dnf -y remove rpmfusion-free-release
-rm -f /etc/yum.repos.d/rpmfusion-free*.repo
-
-restore_akmodsbuild
-
 # ---------------------------------------------------------------------------
 # Build Nvidia modules (optional)
 # ---------------------------------------------------------------------------
@@ -301,9 +320,17 @@ if [ "${NVIDIA}" = "true" ]; then
     curl -fsSL --retry 5 --create-dirs \
         https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo \
         -o /etc/yum.repos.d/nvidia-container-toolkit.repo
-    curl -fsSL --retry 5 --create-dirs \
-        https://negativo17.org/repos/fedora-nvidia-580.repo \
-        -o /etc/yum.repos.d/fedora-nvidia-580.repo
+    if [[ "${IMAGE_NAME:-}" == *"open"* ]]; then
+        log "Detected 'open' in IMAGE_NAME. Using main Negativo17 repo and open kernel modules."
+        curl -fsSL --retry 5 --create-dirs https://negativo17.org/repos/fedora-nvidia.repo -o /etc/yum.repos.d/fedora-nvidia.repo
+        sed -i '/^enabled=1/a\priority=90' /etc/yum.repos.d/fedora-nvidia.repo
+        AKMOD_PKG="akmod-nvidia-open"
+    else
+        log "Using legacy 580 Negativo17 repo and proprietary kernel modules."
+        curl -fsSL --retry 5 --create-dirs https://negativo17.org/repos/fedora-nvidia-580.repo -o /etc/yum.repos.d/fedora-nvidia-580.repo
+        sed -i '/^enabled=1/a\priority=90' /etc/yum.repos.d/fedora-nvidia-580.repo
+        AKMOD_PKG="akmod-nvidia"
+    fi
     sed -i '/^enabled=1/a\priority=90' /etc/yum.repos.d/fedora-nvidia-580.repo
 
     log "Building Nvidia kernel modules."
@@ -311,11 +338,11 @@ if [ "${NVIDIA}" = "true" ]; then
 
     dnf install -y --setopt=install_weak_deps=False --setopt=tsflags=noscripts \
         --disablerepo="rpmfusion*,fedora-multimedia*" \
-        akmod-nvidia \
+        "${AKMOD_PKG}" \
         nvidia-kmod-common \
         nvidia-modprobe \
         gcc-c++
-    TRANSIENT="${TRANSIENT} akmod-nvidia gcc-c++"
+    TRANSIENT="${TRANSIENT} ${AKMOD_PKG} gcc-c++"
 
     akmods --force --verbose --kernels "${KERNEL_VERSION}" --kmod nvidia
 
@@ -420,8 +447,12 @@ fi
 # ---------------------------------------------------------------------------
 
 if [ "${SECURE_BOOT}" = "true" ]; then
-    log "Signing the kernel."
-    sign_kernel || exit 1
+    if [ "${INSTALL_CUSTOM_KERNEL}" = "true" ]; then
+        log "Signing the kernel."
+        sign_kernel || exit 1
+    else
+        log "Skipping kernel image signing (Stock Fedora kernel is already signed)."
+    fi
 
     log "Signing kernel modules."
     sign_kernel_modules || exit 1
@@ -483,7 +514,7 @@ fi
 # Final integrity checks
 # ---------------------------------------------------------------------------
 
-if [ "${SECURE_BOOT}" = "true" ]; then
+if [ "${SECURE_BOOT}" = "true" ] && [ "${INSTALL_CUSTOM_KERNEL}" = "true" ]; then
     sha256sum -c /tmp/vmlinuz.sha || { err "Kernel modified after signing."; exit 1; }
     rm -f /tmp/vmlinuz.sha
     log "Integrity check passed."

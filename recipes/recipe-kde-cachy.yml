@@ -24,5 +24,4 @@ modules:
       key: /tmp/certs/MOK.priv
       cert: /usr/share/cert/MOK.pem
       mok-password: stoyan
-      
   - from-file: finalize.yml
