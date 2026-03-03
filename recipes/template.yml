@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+
+name:
+base-image:
+image-version:
+description:
+
+modules:
+  - from-file: recipe.yml
+
+  - from-file: finalize.yml
