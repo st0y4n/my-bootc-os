@@ -10,8 +10,8 @@ log "Starting custom-kernel module..."
 # Configuration
 # ---------------------------------------------------------------------------
 
-KERNEL_TYPE=$(printf '%s' "$1" | jq -r '.kernel // "cachyos-lto"')
-INITRAMFS=$(printf '%s' "$1"   | jq -r '.initramfs // false')
+KERNEL_TYPE=$(printf '%s' "$1" | jq -r '.kernel // "stock"')
+INITRAMFS=$(printf '%s' "$1"   | jq -r '.initramfs | if type == "boolean" then . else true end')
 NVIDIA=$(printf '%s' "$1"      | jq -r '.nvidia // false')
 V4L2=$(printf '%s' "$1"        | jq -r '.v4l2loopback // false')
 SIGNING_KEY=$(printf '%s' "$1" | jq -r '.sign.key // ""')
