@@ -2,11 +2,25 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 
 name: silverblue-nvidia
-base-image: ghcr.io/blue-build/base-images/fedora-silverblue-nvidia
+base-image: ghcr.io/ublue-os/silverblue-main
 image-version: latest
 description: silverblue nvidia
 
 modules:
   - from-file: recipe.yml
   - from-file: silverblue.yml
+  - type: custom-kernel
+    source: local
+    kernel: stock
+    nvidia: true
+    secrets:
+      - type: file
+        source: .secure_files/MOK.priv
+        mount:
+          type: file
+          destination: /tmp/certs/MOK.priv
+    sign:
+      key: /tmp/certs/MOK.priv
+      cert: /usr/share/cert/MOK.pem
+      mok-password: stoyan
   - from-file: finalize.yml
