@@ -8,4 +8,5 @@ description: cosmic
 
 modules:
   - from-file: recipe.yml
+  - from-file: cosmic.yml
   - from-file: finalize.yml

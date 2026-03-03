@@ -8,6 +8,7 @@ description: cosmic nvidia
 
 modules:
   - from-file: recipe.yml
+  - from-file: cosmic.yml
   - type: custom-kernel
     source: local
     kernel: stock
