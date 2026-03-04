@@ -9,4 +9,17 @@ description: silverblue
 modules:
   - from-file: recipe.yml
   - from-file: silverblue.yml
+  - type: custom-kernel
+    source: local
+    kernel: stock
+    secrets:
+      - type: file
+        source: .secure_files/MOK.priv
+        mount:
+          type: file
+          destination: /tmp/certs/MOK.priv
+    sign:
+      key: /tmp/certs/MOK.priv
+      cert: /usr/share/cert/MOK.pem
+      mok-password: stoyan
   - from-file: finalize.yml
