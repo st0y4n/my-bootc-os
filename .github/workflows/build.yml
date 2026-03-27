@@ -33,7 +33,7 @@ jobs:
     steps:
       # 1. Download the repo code manually first
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # 2. Create the hidden folder and inject the secret key ONLY for cachy recipes
       - name: Setup MOK Key for Secure Boot
